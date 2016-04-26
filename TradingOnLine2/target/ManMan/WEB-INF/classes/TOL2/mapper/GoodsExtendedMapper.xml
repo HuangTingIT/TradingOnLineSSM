@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="TOL2.mapper.GoodsExtendedMapper" >
+
+    <!-- 定义商品查询的sql片段，就是商品查询条件 -->
+    <sql id="query_goods_where">
+        <!-- 使用动态sql，通过if判断，满足条件进行sql拼接 -->
+        <!-- 商品查询条件通过ItemsQueryVo包装对象 中itemsCustom属性传递 -->
+        <if test="goodsExtended!=null">
+            <if test="goodsExtended.name!=null and goodsExtended.name!=''">
+                goods.name LIKE '%${goodsExtended.name}%'
+            </if>
+        </if>
+
+    </sql>
+
+    <!-- 商品列表查询 -->
+    <!-- parameterType传入包装对象(包装了查询条件)
+        resultType建议使用扩展对象
+     -->
+    <select id="findGoodsListByName" parameterType="TOL2.model.GoodsQueryVO"
+            resultType="TOL2.model.GoodsExtended">
+        SELECT * FROM goods
+        <where>
+            <include refid="query_goods_where"></include>
+        </where>
+    </select>
+
+</mapper>
