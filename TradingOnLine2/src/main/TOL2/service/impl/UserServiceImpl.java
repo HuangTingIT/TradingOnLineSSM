@@ -4,6 +4,7 @@ import TOL2.exception.UserException;
 import TOL2.mapper.*;
 import TOL2.model.User;
 import TOL2.model.UserQueryVO;
+import TOL2.other.CodeUtils;
 import TOL2.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,22 +49,25 @@ public class UserServiceImpl implements UserService {
         System.out.println("gengxin "+user);
     }
     public void insertUser(User user)throws Exception{
-
-        userMapper.insert(user);
+        String salt=CodeUtils.getSalt();
+        String hashpass=CodeUtils.getHash(user.getPassword(),salt);
+        user.setPassword(hashpass);
+        Integer id=userMapper.insertUser(user);
+        System.out.println("id:"+id);
+        userMapper.insertSalt(id,salt);
     }
-
     public User loginByTel(String telephone,String password)throws Exception{
-        User user=userMapper.selectByTelephone(telephone);
-        System.out.println("找到："+user);
-        if(user==null||user.getId()==null) {
-            System.out.println("根据手机号登陆 查不到此人");
-            return user;
-        }else if(password.equals(user.getPassword())){
-            return user;
-        }else{
-            System.out.println("找到该手机号，密码错误");
-            user=null;
-            return user;
+        User user=userMapper.findUserByTel(telephone);
+        if(user!=null){
+            String salt= userMapper.findSalt(user.getId());
+            String hashpass= CodeUtils.getHash(user.getPassword(),salt);
+            boolean flag=CodeUtils.verify(hashpass,user.getPassword(),salt);
+            if(!flag){
+                user=null;
+                System.out.println("login succeed!");
+            }
+
         }
+        return user;
     }
 }

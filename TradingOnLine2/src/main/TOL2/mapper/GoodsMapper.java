@@ -95,4 +95,6 @@ public interface GoodsMapper {
      * @mbggenerated
      */
     int updateByPrimaryKey(Goods record);
+
+
 }

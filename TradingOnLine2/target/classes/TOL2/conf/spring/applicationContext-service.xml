@@ -5,8 +5,10 @@
 
     <bean id="userService" class="TOL2.service.impl.UserServiceImpl"></bean>
     <bean id="goodsService" class="TOL2.service.impl.GoodsServiceImpl"></bean>
+    <bean id="pageService" class="TOL2.service.impl.PageServiceImpl"></bean>
     <bean id="user" class="TOL2.model.User"/>
     <bean id="goods" class="TOL2.model.Goods"/>
+    <bean id="goodsExtended" class="TOL2.model.GoodsExtended"/>
     <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="mapperInterface" value="TOL2.mapper.UserMapper" />
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />
@@ -17,6 +19,10 @@
     </bean>
     <bean id="goodsExtendedMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="mapperInterface" value="TOL2.mapper.GoodsExtendedMapper" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>
+    <bean id="pageMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="TOL2.mapper.PageMapper" />
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />
     </bean>
     <!--
@@ -42,6 +48,19 @@
                 <!-- 遇到MaxUploadSizeExceededException异常时，自动跳转到/WEB-INF/jsp/error_fileupload.jsp页面 -->
                 <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">error_fileupload</prop>
             </props>
+        </property>
+    </bean>
+
+
+
+    <bean id="log4jInitialization"
+          class="TOL2.other.MytMethodInvokingFactoryBean">
+        <property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+        <property name="targetMethod" value="initLogging" />
+        <property name="arguments">
+            <list>
+                <value>classpath:TOL2/conf/log4j.properties</value>
+            </list>
         </property>
     </bean>
 </beans>

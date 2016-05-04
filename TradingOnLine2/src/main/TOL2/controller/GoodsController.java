@@ -2,11 +2,9 @@ package TOL2.controller;
 
 import TOL2.controller.validation.ValidateGroup1;
 import TOL2.exception.GoodsException;
-import TOL2.model.Goods;
-import TOL2.model.GoodsExtended;
-import TOL2.model.GoodsQueryVO;
-import TOL2.model.User;
+import TOL2.model.*;
 import TOL2.service.GoodsService;
+import TOL2.service.PageService;
 import TOL2.service.UserService;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +40,8 @@ import java.util.UUID;
 public class GoodsController {
     @Autowired
     private GoodsService goodsService;
-
+    @Autowired
+    private PageService pageService;
     //-------------------商品类型-------------------
     @ModelAttribute("itemTypes")
     public Map<String, String> getItemTypes() {
@@ -172,10 +171,9 @@ public class GoodsController {
     }
 
     @RequestMapping("/queryMyGoods")
-    public String queryMyGoods(HttpSession session, ModelMap modelMap) {
+    public String queryMyGoods(HttpServletRequest request,HttpSession session, ModelMap modelMap) {
         Integer userId = ((User) session.getAttribute("user")).getId();
-        List<Goods> goodsList = goodsService.findGoodsByUser(userId);
-        modelMap.addAttribute("goodsList", goodsList);
+        pageService.showAllGoodsByPageAndUserId(request,userId,modelMap);
         return "/goods/goodsList";
     }
 

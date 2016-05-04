@@ -26,4 +26,34 @@
         </where>
     </select>
 
+<!--
+-->
+    <select id="getGoodsCountWithCondition" parameterType="TOL2.model.GoodsExtended" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM goods WHERE   goods.category='${category}' AND goods.name LIKE '%${name}%' AND
+        goods.price BETWEEN ${minPrice}  AND ${maxPrice}
+    </select>
+
+    <select id="searchAllGoodsWithConditions" parameterType="TOL2.model.GoodsExtended"
+            resultType="TOL2.model.Goods">
+        SELECT * FROM goods where goods.category='${category}' AND goods.name LIKE '%${name}%' AND
+        goods.price BETWEEN ${minPrice}  AND ${maxPrice}
+        <if test="order!=null||order!=''">
+            <if test="order=='orderByDefault'.toString()">
+
+            </if>
+            <if test="order=='orderByPriceASC'.toString()">
+                ORDER BY goods.price ASC
+            </if>
+            <if test="order=='orderByPriceDESC'.toString()">
+                ORDER BY goods.price DESC
+            </if>
+            <if test="order=='orderByLikeNumASC'.toString()">
+                ORDER BY goods.likeNum ASC
+            </if>
+            <if test="order=='orderByLikeNumDESC'.toString()">
+                ORDER BY goods.likeNum DESC
+            </if>
+        </if>
+       <!-- LIMIT #{startPos},#{pageSize}-->
+    </select>
 </mapper>
